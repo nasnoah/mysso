@@ -5,6 +5,12 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <div class="w-full space-y-2">
+            <x-mysso.google-sso-button />
+        </div>
+
+        <p class="w-full text-center">or</p>
+
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
 

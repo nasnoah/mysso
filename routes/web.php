@@ -5,6 +5,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Socialite\Socialite;
@@ -43,5 +44,29 @@ Route::get('/auth/google/redirect', function () {
 Route::get('/auth/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
 
-    dd($googleUser);
+    // dd($googleUser);
+
+    $user = User::firstOrCreate(
+        ['email' => $googleUser->getEmail()],
+        [
+            'name'              => $googleUser->getName(),
+        ]
+    );
+
+    $user->markEmailAsVerified();
+
+    $user->identityProviders()->updateOrCreate(
+        ['provider_name' => 'google'],
+        [
+            'provider_id'               => $googleUser->getId(),
+            'provider_email'            => $googleUser->getEmail(),
+            'provider_avatar'           => $googleUser->getAvatar(),
+            'provider_token'            => $googleUser->token,
+            'provider_refresh_token'    => $googleUser->refreshToken,
+        ]
+    );
+
+    Auth::login($user);
+
+    return redirect('/dashboard');
 });

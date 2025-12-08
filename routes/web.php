@@ -42,31 +42,37 @@ Route::get('/auth/google/redirect', function () {
 });
 
 Route::get('/auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
-
-    // dd($googleUser);
-
-    $user = User::firstOrCreate(
-        ['email' => $googleUser->getEmail()],
-        [
-            'name'              => $googleUser->getName(),
-        ]
-    );
-
-    $user->markEmailAsVerified();
-
-    $user->identityProviders()->updateOrCreate(
-        ['provider_name' => 'google'],
-        [
-            'provider_id'               => $googleUser->getId(),
-            'provider_email'            => $googleUser->getEmail(),
-            'provider_avatar'           => $googleUser->getAvatar(),
-            'provider_token'            => $googleUser->token,
-            'provider_refresh_token'    => $googleUser->refreshToken,
-        ]
-    );
-
-    Auth::login($user);
-
-    return redirect('/dashboard');
+    try {
+        $googleUser = Socialite::driver('google')->user();
+    
+        // dd($googleUser);
+    
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name'              => $googleUser->getName(),
+            ]
+        );
+    
+        $user->markEmailAsVerified();
+    
+        $user->identityProviders()->updateOrCreate(
+            ['provider_name' => 'google'],
+            [
+                'provider_id'               => $googleUser->getId(),
+                'provider_email'            => $googleUser->getEmail(),
+                'provider_avatar'           => $googleUser->getAvatar(),
+                'provider_token'            => $googleUser->token,
+                'provider_refresh_token'    => $googleUser->refreshToken,
+            ]
+        );
+    
+        Auth::login($user);
+    
+        return redirect('/dashboard');
+    }
+    catch (Exception $e) {
+        return redirect('/login')
+            ->with('sso-failed', 'We could not validate the response from your identity provider. Please try again or use another log in or sign up options.');
+    }
 });

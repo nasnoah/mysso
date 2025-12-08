@@ -5,6 +5,10 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        @if (session('sso-failed'))
+            <flux:callout variant="danger" icon="x-circle" :heading="session('sso-failed')" />
+        @endif
+
         <div class="w-full space-y-2">
             <x-mysso.google-sso-button />
         </div>

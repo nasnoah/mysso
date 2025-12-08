@@ -4,11 +4,8 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-use Laravel\Socialite\Socialite;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,42 +34,4 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
-Route::get('/auth/google/redirect', function () {
-    return Socialite::driver('google')->redirect();
-});
-
-Route::get('/auth/google/callback', function () {
-    try {
-        $googleUser = Socialite::driver('google')->user();
-    
-        // dd($googleUser);
-    
-        $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name'              => $googleUser->getName(),
-            ]
-        );
-    
-        $user->markEmailAsVerified();
-    
-        $user->identityProviders()->updateOrCreate(
-            ['provider_name' => 'google'],
-            [
-                'provider_id'               => $googleUser->getId(),
-                'provider_email'            => $googleUser->getEmail(),
-                'provider_avatar'           => $googleUser->getAvatar(),
-                'provider_token'            => $googleUser->token,
-                'provider_refresh_token'    => $googleUser->refreshToken,
-            ]
-        );
-    
-        Auth::login($user);
-    
-        return redirect('/dashboard');
-    }
-    catch (Exception $e) {
-        return redirect('/login')
-            ->with('sso-failed', 'We could not validate the response from your identity provider. Please try again or use another log in or sign up options.');
-    }
-});
+require __DIR__.'/web/auth.php';

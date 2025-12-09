@@ -6,6 +6,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\ThirdPartyAccount;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+    
+    Route::get('settings/third-party-account', ThirdPartyAccount::class)->name('third-party-account.edit');
 });
 
 require __DIR__.'/web/auth.php';

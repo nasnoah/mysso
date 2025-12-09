@@ -1,7 +1,7 @@
 <x-settings.layout :heading="__('Set password')" 
     :subheading="$this->isSettingPassword
         ? __('Ensure your account is using a long, random password to stay secure')
-        : __('To enable password-based login and full access for your account, you need to set a password')">
+        : __('To enable password-based log in and full access for your account, you need to set a password')">
 
     @if (!$this->isSettingPassword)
         <flux:button variant="primary" type="button" class="w-fit" wire:click="toggleSettingPassword">{{ __('Set a password') }}</flux:button>
@@ -22,9 +22,9 @@
                 autocomplete="password"
             />
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="filled" type="button" class="w-full" wire:click="toggleSettingPassword">{{ __('Cancel') }}</flux:button>
+                    <flux:button type="button" class="w-full" wire:click="toggleSettingPassword">{{ __('Cancel') }}</flux:button>
                 </div>
 
                 <div class="flex items-center justify-end">

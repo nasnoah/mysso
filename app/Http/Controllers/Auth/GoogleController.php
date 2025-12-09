@@ -25,7 +25,7 @@ class GoogleController extends Controller
                 'provider_id'       => $googleUser->getId(),
             ])->first();
 
-            if ($providerAccount) {
+            if ($providerAccount && !Auth::check()) { # Login existing account
                 $providerAccount->update([
                     'provider_email'            => $googleUser->getEmail(),
                     'provider_avatar'           => $googleUser->getAvatar(),
@@ -39,7 +39,7 @@ class GoogleController extends Controller
             else {
                 $userAccount = User::where('email', $googleUser->getEmail())->first();
 
-                if ($userAccount) {
+                if ($userAccount) { # No linked provider account, but user account exists
                     $provider = [
                         'name'             => 'google',
                         'id'               => $googleUser->getId(),
@@ -49,9 +49,35 @@ class GoogleController extends Controller
                         'refresh_token'    => $googleUser->refreshToken,
                     ];
 
-                    return to_route('auth.google.confirm')->with(['provider' => $provider, 'user' => $userAccount]);
+                    if (Auth::check()) { # Link provider to logged in user
+                        $currentUser = Auth::user();
+
+                        if ($currentUser->email == $googleUser->getEmail()) {
+
+                            if ($currentUser->identityProviders()->where([
+                                'provider_name' => 'google',
+                                'provider_id'   => $googleUser->getId(),
+                            ])->exists()) {
+                                return to_route('third-party-account.edit')
+                                    ->with('sso-failed', 'Your Google account is already linked to your account.');
+                            }
+
+                            $this->link(user: $currentUser, provider: $provider);
+
+                            return to_route('third-party-account.edit')
+                                ->with('sso-succeded', 'Successfully linked your Google account.');
+                        }
+                        else {
+                            return to_route('third-party-account.edit')
+                                ->with('sso-failed', 'Failed linked your Google account. The Google\'s email ('.$googleUser->getEmail().') not same as your account\'s email ('.$currentUser->email.'). Please use a matching Google account or update your account\'s email.');
+                        }
+                    }
+                    else { # Link provider account to existing user after confirmation
+                        return to_route('auth.google.confirm')
+                            ->with(['provider' => $provider, 'user' => $userAccount]);
+                    }
                 }
-                else {
+                else { # Register new account with provider account
                     $user = User::create([
                         'email' => $googleUser->getEmail(),
                         'name'  => $googleUser->getName(),
@@ -91,5 +117,25 @@ class GoogleController extends Controller
         }
 
         return view('confirm-link-account', compact(['provider', 'user']));
+    }
+
+    public function link($user, $provider) {
+        $user->identityProviders()->create([
+            'provider_name'             => $provider['name'],
+            'provider_id'               => $provider['id'],
+            'provider_email'            => $provider['email'],
+            'provider_avatar'           => $provider['avatar'],
+            'provider_token'            => $provider['token'],
+            'provider_refresh_token'    => $provider['refresh_token'],
+        ]);
+
+        if (!Auth::check()) {
+            Auth::login($user);
+        }
+    }
+
+    public function unlink() {
+        $user = Auth::user();
+        $user->identityProviders()->google()->delete();
     }
 }

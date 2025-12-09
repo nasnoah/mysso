@@ -19,7 +19,7 @@ return new class extends Migration
                 ->nullable()
                 ->index()
                 ->constrained((new User)->getTable())
-                ->nullOnDelete();
+                ->cascadeOnDelete();
 
             $table->string('provider_id');
             $table->string('provider_name');

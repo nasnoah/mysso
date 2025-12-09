@@ -6,7 +6,15 @@
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" :disabled="auth()->user()->hasIdentityProvider" />
+
+                @if (auth()->user()->hasIdentityProvider)
+                    <flux:text class="text-xs mt-2">
+                        <span>Please unlink all</span> 
+                        <flux:link :href="route('third-party-account.edit')" wire:navigate>{{ __('third-party account') }}</flux:link> 
+                        <span>to change your email address</span>
+                    </flux:text>
+                @endif
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>

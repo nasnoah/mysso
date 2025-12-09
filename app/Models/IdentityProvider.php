@@ -16,6 +16,10 @@ class IdentityProvider extends Model
         'provider_refresh_token',
     ];
 
+    public function scopeGoogle($query) {
+        return $query->where('provider_name', 'google');
+    }
+
     public function user() {
         return $this->belongsTo(User::class);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\IdentityProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -33,14 +34,14 @@ class Profile extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
 
-            'email' => [
+            ...!$user->hasIdentityProvider ? ['email' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id),
-            ],
+            ]] : [],
         ]);
 
         $user->fill($validated);

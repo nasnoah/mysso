@@ -6,6 +6,7 @@
             @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication() && isset(auth()->user()->password))
                 <flux:navlist.item :href="route('two-factor.show')" wire:navigate>{{ __('Two-Factor Auth') }}</flux:navlist.item>
             @endif
+            <flux:navlist.item :href="route('third-party-account.edit')" wire:navigate>{{ __('Third-Party Account') }}</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
         </flux:navlist>
     </div>

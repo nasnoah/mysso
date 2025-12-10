@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\IdentityProviderController;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,8 @@ class ConfirmLinkAccount extends Component
     public User $user;
 
     public function linkAccount() {
-        (new GoogleController)->link(user: $this->user, provider: $this->provider);
+        // (new GoogleController)->link(user: $this->user, provider: $this->provider);
+        (new IdentityProviderController)->link(user: $this->user, provider: $this->provider);
             
         return to_route('dashboard');
     }

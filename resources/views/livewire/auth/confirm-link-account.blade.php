@@ -2,7 +2,7 @@
     <x-auth-header :title="__('Add new log in method')" 
         :description="__(
             $provider['email'].' is an existing email for '.$user->name.'\'s account.
-            Do you want to enable '.ucwords($provider['name']).' log in for '.$user->name.'\'s account?'
+            Do you want to enable '.App\Enums\ProviderName::from($provider['name'])->label().' log in for '.$user->name.'\'s account?'
         )" />
 
     <flux:button variant="primary" type="button" class="w-full" data-test="link-account-button"

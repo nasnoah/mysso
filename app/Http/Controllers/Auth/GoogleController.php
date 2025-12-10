@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\ProviderName;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,15 +14,15 @@ use Illuminate\Support\Facades\Auth;
 class GoogleController extends Controller
 {
     public function redirect() {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver(ProviderName::GOOGLE->value)->redirect();
     }
 
     public function callback() {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver(ProviderName::GOOGLE->value)->user();
         
             $providerAccount = IdentityProvider::where([
-                'provider_name'     => 'google',
+                'provider_name'     => ProviderName::GOOGLE->value,
                 'provider_id'       => $googleUser->getId(),
             ])->first();
 
@@ -41,7 +42,7 @@ class GoogleController extends Controller
 
                 if ($userAccount) { # No linked provider account, but user account exists
                     $provider = [
-                        'name'             => 'google',
+                        'name'             => ProviderName::GOOGLE->value,
                         'id'               => $googleUser->getId(),
                         'email'            => $googleUser->getEmail(),
                         'avatar'           => $googleUser->getAvatar(),
@@ -55,7 +56,7 @@ class GoogleController extends Controller
                         if ($currentUser->email == $googleUser->getEmail()) {
 
                             if ($currentUser->identityProviders()->where([
-                                'provider_name' => 'google',
+                                'provider_name' => ProviderName::GOOGLE->value,
                                 'provider_id'   => $googleUser->getId(),
                             ])->exists()) {
                                 return to_route('third-party-account.edit')
@@ -86,7 +87,7 @@ class GoogleController extends Controller
                     $user->markEmailAsVerified();
                 
                     $providerAccount = $user->identityProviders()->create([
-                        'provider_name'             => 'google',
+                        'provider_name'             => ProviderName::GOOGLE->value,
                         'provider_id'               => $googleUser->getId(),
                         'provider_email'            => $googleUser->getEmail(),
                         'provider_avatar'           => $googleUser->getAvatar(),

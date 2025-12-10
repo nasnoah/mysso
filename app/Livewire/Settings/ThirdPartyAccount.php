@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Enums\ProviderName;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Models\IdentityProvider;
 use Illuminate\Support\Collection;
@@ -42,10 +43,10 @@ class ThirdPartyAccount extends Component
             'password'  => ['required', 'string', 'current_password'],
         ]);
 
-        if ($this->selectedProvider->provider_name == 'google') {
+        if ($this->selectedProvider->provider_name == ProviderName::GOOGLE) {
             (new GoogleController)->unlink();
         }
 
-        return to_route('third-party-account.edit')->with('sso-succeded', 'Successfully unlinked your '.$this->selectedProvider->provider_name.' account.');
+        return to_route('third-party-account.edit')->with('sso-succeded', 'Successfully unlinked your '.$this->selectedProvider->provider_name->label().' account.');
     }
 }

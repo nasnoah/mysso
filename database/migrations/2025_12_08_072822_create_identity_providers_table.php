@@ -22,7 +22,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('provider_id');
-            $table->string('provider_name');
+            $table->string('provider_name')->comment('enum ProviderName');
             $table->string('provider_email')->nullable();
             $table->string('provider_avatar')->nullable();
             $table->text('provider_token')->nullable();

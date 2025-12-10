@@ -16,37 +16,44 @@
                     @foreach ($this->identityProviders as $identityProvider)
                         <flux:button variant="primary" type="button" wire:click="select('{{ $identityProvider->id }}')">
                             <div class="flex items-center gap-2 select-none">
-                                <img src="{{ asset('images/'.$identityProvider->provider_name.'-logo.svg') }}" alt="" class="w-6 h-6">
-                                <span class="text-base">{{ __(ucwords($identityProvider->provider_name)) }}</span>
+                                {{-- <img src="{{ asset('images/'.$identityProvider->provider_name->value.'-logo.blade.php') }}" alt="" class="w-6 h-6"> --}}
+                                <x-dynamic-component :component="'mysso.icons.'.$identityProvider->provider_name->value.'-logo'" class="w-6 h-6"/>
+                                <span class="text-base">{{ __($identityProvider->provider_name->label()) }}</span>
                             </div>
                         </flux:button>
                     @endforeach
             
-                    <flux:modal.trigger name="link-new" class="flex items-center gap-1">
-                        <flux:button type="button" x-on:click.prevent="$dispatch('open-modal', 'link-new')">
-                            <div class="flex items-center gap-2 select-none">
-                                <span class="">{{ __('Link new account') }}</span>
+                    @if ($this->identityProviders->filter(fn ($provider) => in_array($provider->provider_name->value, array_column(App\Enums\ProviderName::cases(), 'value')))->count() < count(App\Enums\ProviderName::cases()))
+                        <flux:modal.trigger name="link-new" class="flex items-center gap-1">
+                            <flux:button :variant="count($this->identityProviders) ? null : 'primary'" type="button" x-on:click.prevent="$dispatch('open-modal', 'link-new')">
+                                <div class="flex items-center gap-2 select-none">
+                                    <span class="">{{ __('Link '.(count($this->identityProviders) ? 'new' : 'an').' account') }}</span>
+                                </div>
+                            </flux:button>
+                        </flux:modal.trigger>
+        
+                        <flux:modal name="link-new" :show="$errors->isNotEmpty()" focusable class="max-w-lg min-w-96 space-y-4">
+                            <div>
+                                <flux:heading size="lg">{{ __('Link '.(count($this->identityProviders) ? 'new' : 'an').' account') }}</flux:heading>
                             </div>
-                        </flux:button>
-                    </flux:modal.trigger>
-    
-                    <flux:modal name="link-new" :show="$errors->isNotEmpty()" focusable class="max-w-lg min-w-96 space-y-4">
-                        <div>
-                            <flux:heading size="lg">{{ __('Link new account') }}</flux:heading>
-                        </div>
-                        
-                        <flux:callout color="blue" icon="information-circle" heading="Only third-party account that has same email as your account's email can be linked" />
-    
-                        <div class="w-full mt-2 space-y-2">
-                            <x-mysso.google-sso-button />
-                        </div>
-                    </flux:modal>
+                            
+                            <flux:callout color="blue" icon="information-circle" heading="Only third-party account that has same email as your account's email can be linked" />
+        
+                            <div class="w-full mt-2 space-y-2">
+                                @foreach (App\Enums\ProviderName::cases() as $providerName)
+                                    @continue($this->identityProviders->pluck('provider_name')->contains($providerName))
+
+                                    <x-mysso.sso-button :providerName="$providerName" title="Link to" />
+                                @endforeach
+                            </div>
+                        </flux:modal>
+                    @endif
                 </div>
             </div>
         @else
             <div class="space-y-4">
                 <flux:heading size="xl">
-                    {{ ucwords($this->selectedProvider->provider_name) }}
+                    {{ $this->selectedProvider->provider_name->label() }}
                 </flux:heading>
                 
                 <table>

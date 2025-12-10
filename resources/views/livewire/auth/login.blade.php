@@ -10,7 +10,9 @@
         @endif
 
         <div class="w-full space-y-2">
-            <x-mysso.google-sso-button />
+            @foreach (App\Enums\ProviderName::cases() as $providerName)
+                <x-mysso.sso-button :providerName="$providerName" />
+            @endforeach
         </div>
 
         <p class="w-full text-center">or</p>

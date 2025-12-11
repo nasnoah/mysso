@@ -113,6 +113,11 @@ class IdentityProviderController extends Controller
             return to_route('dashboard');
         }
         catch (Exception $e) {
+            if (Auth::check()) {    
+                return to_route('third-party-account.edit')
+                    ->with('sso-failed', 'We could not validate the response from your identity provider. Please try again or use another link options.');
+            }
+
             return to_route('login')
                 ->with('sso-failed', 'We could not validate the response from your identity provider. Please try again or use another log in or sign up options.');
         }

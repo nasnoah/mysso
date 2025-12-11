@@ -13,8 +13,6 @@ class IdentityProvider extends Model
         'provider_name',
         'provider_email',
         'provider_avatar',
-        'provider_token',
-        'provider_refresh_token',
     ];
 
     protected $casts = [

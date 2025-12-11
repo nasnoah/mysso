@@ -18,10 +18,6 @@ class IdentityProviderController extends Controller
 
         $driver = Socialite::driver($provider->value);
 
-        if ($provider == ProviderName::GITHUB) {
-            $driver->scopes(['user:email']);
-        }
-
         return $driver->redirect();
     }
 
@@ -41,8 +37,6 @@ class IdentityProviderController extends Controller
                 $providerAccount->update([
                     'provider_email'            => $providerUser->getEmail(),
                     'provider_avatar'           => $providerUser->getAvatar(),
-                    'provider_token'            => $providerUser->token,
-                    'provider_refresh_token'    => $providerUser->refreshToken,
                 ]);
 
                 $providerAccount->loadMissing(['user']);
@@ -57,8 +51,6 @@ class IdentityProviderController extends Controller
                         'id'               => $providerUser->getId(),
                         'email'            => $providerUser->getEmail(),
                         'avatar'           => $providerUser->getAvatar(),
-                        'token'            => $providerUser->token,
-                        'refresh_token'    => $providerUser->refreshToken,
                     ];
 
                     if (Auth::check()) { # Link provider to logged in user
@@ -102,8 +94,6 @@ class IdentityProviderController extends Controller
                         'provider_id'               => $providerUser->getId(),
                         'provider_email'            => $providerUser->getEmail(),
                         'provider_avatar'           => $providerUser->getAvatar(),
-                        'provider_token'            => $providerUser->token,
-                        'provider_refresh_token'    => $providerUser->refreshToken,
                     ]);
                 }
             }
@@ -142,8 +132,6 @@ class IdentityProviderController extends Controller
             'provider_id'               => $provider['id'],
             'provider_email'            => $provider['email'],
             'provider_avatar'           => $provider['avatar'],
-            'provider_token'            => $provider['token'],
-            'provider_refresh_token'    => $provider['refresh_token'],
         ]);
 
         if (!Auth::check()) {

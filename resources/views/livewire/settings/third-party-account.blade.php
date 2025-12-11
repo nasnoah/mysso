@@ -16,7 +16,6 @@
                     @foreach ($this->identityProviders as $identityProvider)
                         <flux:button variant="primary" type="button" wire:click="select('{{ $identityProvider->id }}')">
                             <div class="flex items-center gap-2 select-none">
-                                {{-- <img src="{{ asset('images/'.$identityProvider->provider_name->value.'-logo.blade.php') }}" alt="" class="w-6 h-6"> --}}
                                 <x-dynamic-component :component="'mysso.icons.'.$identityProvider->provider_name->value.'-logo'" class="w-6 h-6"/>
                                 <span class="text-base">{{ __($identityProvider->provider_name->label()) }}</span>
                             </div>

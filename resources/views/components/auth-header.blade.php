@@ -1,6 +1,6 @@
 @props([
     'title',
-    'description',
+    'description' => null,
 ])
 
 <div class="flex w-full flex-col text-center">

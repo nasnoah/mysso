@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('provider_name')->comment('enum ProviderName');
             $table->string('provider_email')->nullable();
             $table->string('provider_avatar')->nullable();
-            $table->text('provider_token')->nullable();
-            $table->text('provider_refresh_token')->nullable();
 
             $table->timestamps();
         });

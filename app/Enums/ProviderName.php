@@ -18,12 +18,4 @@ enum ProviderName: string {
         };
     }
 
-    public function controller(): string {
-        return match($this) {
-            self::GOOGLE    => Auth\GoogleController::class,
-            self::GITHUB    => Auth\GithubController::class,
-            self::FACEBOOK  => Auth\FacebookController::class,
-        };
-    }
-
 }

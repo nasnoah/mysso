@@ -1,3 +1,9 @@
-# SSO
+# MySSO
 
-Implements SSO login method in Laravel 12 using Laravel Socialite
+Implements Single Sign-On (SSO) in Laravel 12 using Laravel Socialite
+
+Available Provider:
+
+- Google
+- GitHub
+- Facebook

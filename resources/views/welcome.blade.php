@@ -54,17 +54,17 @@
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
                 <div class="text-[13px] leading-[20px] flex-1 space-y-6 p-6 pb-12 lg:p-20 bg-neutral-50 dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-es-lg rounded-ee-lg lg:rounded-ss-lg lg:rounded-ee-none overflow-clip">
-                    <div class="text-8xl font-bold tracking-wide text-center transition-all translate-y-0 starting:-translate-y-full delay-100">
+                    <div class="text-5xl lg:text-8xl font-bold tracking-wide text-center transition-all translate-y-0 starting:-translate-y-full delay-100">
                         MySSO
                     </div>
-                    <p class="text-xl text-center text-neutral-600 dark:text-neutral-400 transition-all translate-y-0 starting:translate-y-full delay-200">
+                    <p class="text-base lg:text-xl text-center text-neutral-600 dark:text-neutral-400 transition-all translate-y-0 starting:translate-y-full delay-200">
                         Implements Single Sign-On (SSO) in Laravel 12 using 
-                        <a href="https://laravel.com/docs/12.x/socialite" target="__BLANK">
+                        <a href="https://laravel.com/docs/12.x/socialite" target="__BLANK" class="underline underline-offset-2 hover:text-black dark:hover:text-white">
                             Laravel Socialite
                         </a>
                     </p>
 
-                    <div class="pt-8 w-full flex items-center justify-evenly gap-4">
+                    <div class="pt-4 lg:pt-8 w-full flex flex-col lg:flex-row items-center justify-evenly gap-4">
                         @foreach (App\Enums\ProviderName::cases() as $providerName)
                             <div class="bg-neutral-100 dark:bg-neutral-700 p-4 rounded-md border border-neutral-300 dark:border-neutral-500 transition-all ease-out scale-100 starting:scale-0 delay-300 hover:delay-75 hover:scale-110">
                                 <x-dynamic-component :component="'mysso.icons.'.$providerName->value.'-logo'" class="w-20 h-20"/>
